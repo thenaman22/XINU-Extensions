@@ -37,6 +37,31 @@ This project implements demand paging and virtual memory support in the Xinu ope
 | Xinu Code & Global Memory |
 |----------------------------|
 
+# Process Scheduling in Xinu
+
+This project enhances the Xinu operating system by adding support for two advanced CPU scheduling algorithms that mitigate starvation and improve fairness in process execution.
+
+## Features
+
+- **Implemented Two New Scheduling Policies**:
+  - 📊 **Exponential Distribution Scheduler (`EXPDISTSCHED`)**:  
+    Selects the next process based on an exponentially distributed random value. Lower-priority processes have a statistically higher chance of being selected, addressing starvation.
+    - Random number generation based on exponential distribution using `-log(y)/λ`.
+    - Processes with the same priority follow a round-robin policy.
+  - ⚙️ **Linux-like Scheduler (`LINUXSCHED`)**:  
+    Mimics the `SCHED_OTHER` policy from Linux 2.2 kernel. Epoch-based scheduling with dynamic time quantum and goodness-based process selection.
+    - Time quantum: `quantum = priority` or `floor(prev_counter/2) + priority`.
+    - Goodness value: `goodness = priority + counter`, recalculated at each scheduling event.
+
+- **Scheduler Control**:
+  - `setschedclass(int sched_class)`: Switches scheduling class (`EXPDISTSCHED` or `LINUXSCHED`).
+  - `getschedclass()`: Returns current scheduling policy in use.
+
+- **Math Utilities for EXPDISTSCHED**:
+  - Custom implementations of `log()`, `pow()`, and `expdev()` for exponential sampling due to lack of `math.h` in Xinu.
+
+
+
 ## Testing
 Test cases are included in testmain.c, verifying:
 
