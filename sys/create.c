@@ -7,7 +7,7 @@
 #include <sem.h>
 #include <mem.h>
 #include <io.h>
-#include <paging.h>
+#include <stdio.h>
 
 LOCAL int newpid();
 
@@ -66,11 +66,11 @@ SYSCALL create(procaddr,ssize,priority,name,nargs,args)
 	pptr->pirmask[0] = 0;
 	pptr->pnxtkin = BADPID;
 	pptr->pdevs[0] = pptr->pdevs[1] = pptr->ppagedev = BADDEV;
-	pptr->vhpnpages = 0;
-	int frame;
-	get_frm(&frame);
-	pd_t* pd = init_pd(frame, pid);
-	pptr->pdbr = (unsigned long) ((FRAME0+frame)*NBPG);
+	pptr->quantum = -1;				/*Values initialised for new created processes*/
+	pptr->counter = -1;
+	pptr->goodness = -1;
+	pptr->epoch_prio = priority;
+
 		/* Bottom of stack */
 	*saddr = MAGIC;
 	savsp = (unsigned long)saddr;
@@ -101,7 +101,6 @@ SYSCALL create(procaddr,ssize,priority,name,nargs,args)
 	*pushsp = pptr->pesp = (unsigned long)saddr;
 
 	restore(ps);
-
 	return(pid);
 }
 

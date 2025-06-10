@@ -77,6 +77,11 @@ struct	pentry	{
         int     vhpno;                  /* starting pageno for vheap    */
         int     vhpnpages;              /* vheap size                   */
         struct mblock *vmemlist;        /* vheap list              	*/
+		int counter;     /*Number of Ticks remaining for the process in the current epoch!*/
+		int goodness;    /*Priority for Linuxsched*/
+		int epoch_prio;  /*Priority assigned at the starting of each epoch, used to calculate goodness whenever resched called!*/
+		int quantum;     /*Qunatum Assigned for the particular epoch*/
+
 };
 
 
